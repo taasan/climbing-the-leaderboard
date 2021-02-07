@@ -71,13 +71,16 @@ import Prelude
   , read
   , reverse
   , succ
+  , tail
   , words
+  , zip
   , ($)
   , (.)
   , (<)
   , (==)
   , (>=)
   , (>>=)
+  , (<>)
   )
 
 import Data.Coerce
@@ -86,8 +89,12 @@ import Data.Coerce
   )
 
 #include "Lib.purs"
-#include "Lib/Foldl.purs"
 
+#ifdef Foldl
+#include "Lib/Foldl.purs"
+#else
+#include "Lib/TailCall.purs"
+#endif
 -- PS compat. This makes included Purescript files compile.
 
 -- Read and Show as wrapped type.
@@ -95,6 +102,8 @@ import Data.Coerce
 deriving newtype instance Show Score
 
 deriving newtype instance Read Score
+
+deriving instance Num Score
 
 deriving instance Eq Score
 
@@ -124,8 +133,14 @@ deriving instance Show ScoreBoard
 compose :: (b -> c) -> (a -> b) -> a -> c
 compose = (.)
 
+zero :: Num a => a
+zero = 0
+
 one :: Num a => a
 one = 1
+
+snoc :: [a] -> a -> [a]
+snoc xs x = xs <> [x]
 
 foldl :: Foldable t => (b -> a -> b) -> b -> t a -> b
 foldl = foldl'

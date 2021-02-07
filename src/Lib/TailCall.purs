@@ -1,11 +1,17 @@
+{-
+#if 0
+-}
 module Lib.TailCall where
 
 import Prelude
 import Data.List (List(..), reverse, snoc, zip, (:))
 import Data.Newtype (unwrap)
-import Data.Tuple (Tuple(..), snd)
+import Data.Tuple (Tuple(..))
 import Lib (Climb(..), PlayerScores(..), Rank, RankedScores(..), Score, ScoreBoard(..), ScoreBoardList, succ, tail)
 
+{-
+#endif
+-}
 positions :: RankedScores -> ScoreBoard
 positions (RankedScores ranks) = ScoreBoard $ g one (zip ranks $ snoc (tail ranks) zero) mempty
   where
@@ -33,7 +39,7 @@ climb rankedScores@(RankedScores (highScore : _)) (PlayerScores player) = go pla
     | score < score' = go ps' rs $ succ rank : acc
     | otherwise = go ps rs' acc
       where
-      p = (score >= _) <<< snd
+      p (Tuple _ x) = score >= x
 
 solve :: RankedScores -> PlayerScores -> Climb Rank
 solve = (compose (Climb <<< reverse)) <<< climb

@@ -22,8 +22,9 @@ doTest() {
     printf '\nTesting %s with %s\n' "${func}" "${input_base}"
 
     case ${func} in
-        haskell)
+        climb-*)
             time cabal run -v0 \
+                 "${func}" \
                  <"${input}" \
                  >"${output}"
             ;;
@@ -44,7 +45,7 @@ doTest() {
          "${data_dir}/${output_base}"
 }
 
-for func in tc mr foldl haskell
+for func in tc mr foldl climb-tc climb-foldl
 do
     for input in "${data_dir}"/input-*.txt
     do
