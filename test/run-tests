@@ -13,7 +13,7 @@ data_dir=$(realpath "$(dirname "${0}")/data")
 [[ -d ${data_dir} ]]
 
 doTest() {
-    local input_base output_base output
+    local input_base output_base output func
     input=$1
     func=$2
     input_base=$(basename "${input}")
@@ -22,9 +22,10 @@ doTest() {
     printf '\nTesting %s with %s\n' "${func}" "${input_base}"
 
     case ${func} in
-        climb-*)
-            time cabal run -v0 \
-                 "${func}" \
+        haskell-*)
+            time cabal run -v0 -- \
+                 climb \
+                 "--${func#haskell-}" \
                  <"${input}" \
                  >"${output}"
             ;;
@@ -45,7 +46,9 @@ doTest() {
          "${data_dir}/${output_base}"
 }
 
-for func in tc mr foldl climb-tc climb-foldl
+haskell_funcs=$(cabal run -v0 -- climb --list | sed -E 's|(.+)|haskell-\1|')
+
+for func in tc mr foldl $haskell_funcs
 do
     for input in "${data_dir}"/input-*.txt
     do

@@ -35,11 +35,9 @@ climb rankedScores@(RankedScores (highScore : _)) (PlayerScores player) = go pla
   go _ Nil acc = one : acc
 
   go ps@(score : ps') rs@((Tuple rank score') : rs') acc
-    | score >= highScore = go ps' rs $ one : acc -- 🏆
+    | score >= highScore = go ps' rs $ one : acc -- #1!
     | score < score' = go ps' rs $ succ rank : acc
     | otherwise = go ps rs' acc
-      where
-      p (Tuple _ x) = score >= x
 
 solve :: RankedScores -> PlayerScores -> Climb Rank
 solve = (compose (Climb <<< reverse)) <<< climb

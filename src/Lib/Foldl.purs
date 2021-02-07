@@ -16,7 +16,7 @@ positions :: RankedScores -> ScoreBoard
 positions (RankedScores ranks) = wrap $ foldl f mempty ranks
   where
   f :: ScoreBoardList -> Score -> ScoreBoardList
-  f Nil score = Tuple one score : Nil
+  f Nil score = pure $ Tuple one score
 
   f acc@(Tuple rank current : _) score
     | current == score = acc
