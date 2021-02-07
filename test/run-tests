@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+set -eu -o pipefail
+
+spago build
+cabal build
+tmp_dir=$(mktemp -d)
+
+trap 'printf "rm -rf %s\n" "$tmp_dir"; rm -rf "$tmp_dir"' EXIT
+
+data_dir=$(realpath "$(dirname "${0}")/data")
+
+[[ -d ${data_dir} ]]
+
+doTest() {
+    local input_base output_base output
+    input=$1
+    func=$2
+    input_base=$(basename "${input}")
+    output_base="out${input_base#in}"
+    output="${tmp_dir}/${output_base}"
+    printf '\nTesting %s with %s\n' "${func}" "${input_base}"
+
+    case ${func} in
+        haskell)
+            time cabal run -v0 \
+                 <"${input}" \
+                 >"${output}"
+            ;;
+
+        *)
+            node_args=("--${func}")
+            time spago \
+                 run \
+                 --node-args "${node_args[@]}" \
+                 <"${input}" \
+                 >"${output}"
+            ;;
+    esac
+
+    diff --ignore-trailing-space \
+         --unified \
+         "${output}" \
+         "${data_dir}/${output_base}"
+}
+
+for func in tc mr foldl haskell
+do
+    for input in "${data_dir}"/input-*.txt
+    do
+        doTest "${input}" "${func}"
+    done
+done

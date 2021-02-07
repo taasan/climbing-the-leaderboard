@@ -1,0 +1,26 @@
+{
+    "name": "hackerrank",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "bin": {
+        "purescriptkalender2020": "index.js"
+    },
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "test": "spago test",
+        "bundle": "spago bundle-app -t dist/index.js",
+        "start": "spago run",
+        "format": "git ls-files '*.purs' | xargs -L 1 purty --write",
+        "lint": "git ls-files '*.purs' | xargs -L 1 purty validate"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "purescript": "^0.13.8",
+        "purty": "^6.3.0",
+        "spago": "^0.18.1"
+    }
+}
