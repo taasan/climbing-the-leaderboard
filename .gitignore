@@ -12,3 +12,4 @@
 !/test/
 dce-output
 dist*
+*.hscpp
